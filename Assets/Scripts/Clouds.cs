@@ -24,9 +24,13 @@ public class Clouds : MonoBehaviour
 
     public AudioSource correctAudio, wrongAudio, backgroundMusic;
 
+    public float timeRemaining = 20;
+    public TMP_Text timerText;
+    public bool timerIsRunning = false;
     
     private void Start()
     {
+        timerIsRunning = true;
         clouds = new SpriteRenderer[] { topCloud, bottomCloud, leftCloud, rightCloud };
         backgroundMusic.Play();
         Invoke(nameof(SetRandomColor),2f);
@@ -72,6 +76,20 @@ public class Clouds : MonoBehaviour
             CheckSelection(rightCloud);
         }
 
+        if (timerIsRunning)
+        {
+            if (timeRemaining > 0)
+            {
+                timeRemaining -= Time.deltaTime;
+                DisplayTime(timeRemaining);
+            }
+            else
+            {
+                timeRemaining = 0;
+                timerIsRunning = false;
+                backgroundMusic.Stop();
+            }
+        }
     }
 
     private void CheckSelection(SpriteRenderer cloud)
@@ -88,5 +106,14 @@ public class Clouds : MonoBehaviour
             wrongAudio.Play();
             SetRandomColor();
         }
+    }
+
+    private void DisplayTime(float timeToDisplay)
+    {
+        timeToDisplay += 1;
+        float minutes = Mathf.FloorToInt(timeToDisplay / 60);
+        float seconds = Mathf.FloorToInt(timeToDisplay % 60);
+
+        timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
     }
 }
