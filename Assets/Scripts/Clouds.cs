@@ -22,10 +22,13 @@ public class Clouds : MonoBehaviour
     public Sprite[] sprites = new Sprite[7];
     public int score = 0;
 
+    public AudioSource correctAudio, wrongAudio, backgroundMusic;
+
     
     private void Start()
     {
         clouds = new SpriteRenderer[] { topCloud, bottomCloud, leftCloud, rightCloud };
+        backgroundMusic.Play();
         Invoke(nameof(SetRandomColor),2f);
     }
 
@@ -75,14 +78,14 @@ public class Clouds : MonoBehaviour
     {
         if (cloud == selectedCloud)
         {
-            Debug.Log("Correct!");
+            correctAudio.Play();
             score += 5;
             scoreText.text = "Score: " + score;
             SetRandomColor();
         }
         else
         {
-            Debug.Log("Wrong!");
+            wrongAudio.Play();
             SetRandomColor();
         }
     }
