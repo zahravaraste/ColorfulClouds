@@ -802,7 +802,7 @@ MonoBehaviour:
   correctAudio: {fileID: 1439559837}
   wrongAudio: {fileID: 1770800703}
   backgroundMusic: {fileID: 1058114076}
-  timeRemaining: 60
+  timeRemaining: 10
   timerText: {fileID: 1707820662}
   timerIsRunning: 0
 --- !u!1 &1707820660

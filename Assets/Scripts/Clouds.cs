@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class Clouds : MonoBehaviour
 {
@@ -33,7 +34,7 @@ public class Clouds : MonoBehaviour
         timerIsRunning = true;
         clouds = new SpriteRenderer[] { topCloud, bottomCloud, leftCloud, rightCloud };
         backgroundMusic.Play();
-        Invoke(nameof(SetRandomColor),2f);
+        Invoke(nameof(SetRandomColor),0.5f);
     }
 
     private void SetRandomColor()
@@ -87,7 +88,7 @@ public class Clouds : MonoBehaviour
             {
                 timeRemaining = 0;
                 timerIsRunning = false;
-                backgroundMusic.Stop();
+                GameOver();
             }
         }
     }
@@ -115,5 +116,14 @@ public class Clouds : MonoBehaviour
         float seconds = Mathf.FloorToInt(timeToDisplay % 60);
 
         timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
+    }
+
+    private void GameOver()
+    {
+        backgroundMusic.Stop();
+        string sceneName = "GameOverScene";
+        SceneManager.LoadScene(sceneName);
+        PlayerPrefs.SetInt("PlayerScore", score);
+
     }
 }
