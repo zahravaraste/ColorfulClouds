@@ -9,6 +9,7 @@ public class Clouds : MonoBehaviour
 {
     public TMP_Text colorText;
     public TMP_Text scoreText;
+    public TMP_Text level2Text;
     public SpriteRenderer topCloud;
     public SpriteRenderer bottomCloud;
     public SpriteRenderer leftCloud;
@@ -24,7 +25,7 @@ public class Clouds : MonoBehaviour
     public Sprite[] sprites = new Sprite[7];
     public int score = 0;
 
-    public AudioSource correctAudio, wrongAudio, backgroundMusic;
+    public AudioSource correctAudio, wrongAudio, backgroundMusic, wellDoneAudio;
 
     public float timeRemaining = 20;
     public TMP_Text timerText;
@@ -132,9 +133,16 @@ public class Clouds : MonoBehaviour
     {
         if (cloud == selectedCloud)
         {
-            correctAudio.Play();
             score += 5;
             scoreText.text = "Score: " + score;
+            if (score == 50){
+                wellDoneAudio.Play();
+                Color newColor;
+                ColorUtility.TryParseHtmlString("#FF0000", out newColor);
+                scoreText.color = newColor;
+            } else {
+                correctAudio.Play();
+            }
             CheckScore(score);
         }
         else
@@ -148,10 +156,11 @@ public class Clouds : MonoBehaviour
     {
         if (Score >= 50) 
         {
-                SetRandomColorLevel2();
+            level2Text.text = "Well Done!!";
+            SetRandomColorLevel2();
         }
         else {
-                SetRandomColor();
+            SetRandomColor();
         }
     }
 
