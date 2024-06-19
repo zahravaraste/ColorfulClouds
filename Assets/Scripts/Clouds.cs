@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
+using System.Linq;
 
 public class Clouds : MonoBehaviour
 {
@@ -58,6 +59,40 @@ public class Clouds : MonoBehaviour
         selectedCloud.sprite = sprites[currentColorIndex];
     }
 
+    private void SetRandomColorLevel2()
+    {
+        int [] arr = {0, 1, 2, 3, 4, 5, 6};
+        int [] fourColorsIndex = GetRandomColors(arr);
+        currentColorIndex = Random.Range(0, 4);
+        currentColor = colors[fourColorsIndex[currentColorIndex]];
+        colorText.text = currentColor.ToString();
+
+        for (int j = 0; j < clouds.Length; j++) 
+        {
+            clouds[j].sprite = sprites[fourColorsIndex[j]];
+            if (fourColorsIndex[currentColorIndex] == fourColorsIndex[j]) {
+                selectedCloud = clouds[j];
+            }
+        }
+    }
+
+    int [] GetRandomColors(int[] fourColorsIndex)
+    {
+        System.Random random = new System.Random();
+        List<int> availableValues = fourColorsIndex.ToList();
+        int[] result = new int[4];
+
+        for (int i = 0; i < 4; i++)
+        {
+            int index = random.Next(availableValues.Count);
+            result[i] = availableValues[index];
+            availableValues.RemoveAt(index);
+        }
+
+        return result;
+    }
+
+
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.UpArrow))
@@ -100,12 +135,23 @@ public class Clouds : MonoBehaviour
             correctAudio.Play();
             score += 5;
             scoreText.text = "Score: " + score;
-            SetRandomColor();
+            CheckScore(score);
         }
         else
         {
             wrongAudio.Play();
-            SetRandomColor();
+            CheckScore(score);
+        }
+    }
+
+    private void CheckScore(int Score)
+    {
+        if (Score >= 50) 
+        {
+                SetRandomColorLevel2();
+        }
+        else {
+                SetRandomColor();
         }
     }
 
