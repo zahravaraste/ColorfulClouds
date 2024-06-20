@@ -14,11 +14,11 @@ public class Clouds : MonoBehaviour
     public SpriteRenderer bottomCloud;
     public SpriteRenderer leftCloud;
     public SpriteRenderer rightCloud;
-    public SpriteRenderer [] spriteRenderer {get; private set;}
-    
-    public SpriteRenderer [] clouds;
+    public SpriteRenderer[] spriteRenderer { get; private set; }
+
+    public SpriteRenderer[] clouds;
     public List<string> usedColors = new List<string>();
-    public string[] colors = new string[] {"Red", "Green", "Blue", "Yellow", "Pink", "Purple", "Orange"};
+    public string[] colors = new string[] { "Red", "Green", "Blue", "Yellow", "Pink", "Purple", "Orange" };
     public int currentColorIndex;
     public string currentColor;
     public SpriteRenderer selectedCloud;
@@ -27,16 +27,16 @@ public class Clouds : MonoBehaviour
 
     public AudioSource correctAudio, wrongAudio, backgroundMusic, wellDoneAudio;
 
-    public float timeRemaining = 20;
+    public float timeRemaining = 30;
     public TMP_Text timerText;
     public bool timerIsRunning = false;
-    
+
     private void Start()
     {
         timerIsRunning = true;
         clouds = new SpriteRenderer[] { topCloud, bottomCloud, leftCloud, rightCloud };
         backgroundMusic.Play();
-        Invoke(nameof(SetRandomColor),0.5f);
+        Invoke(nameof(SetRandomColor), 0.5f);
     }
 
     private void SetRandomColor()
@@ -62,22 +62,23 @@ public class Clouds : MonoBehaviour
 
     private void SetRandomColorLevel2()
     {
-        int [] arr = {0, 1, 2, 3, 4, 5, 6};
-        int [] fourColorsIndex = GetRandomColors(arr);
+        int[] arr = { 0, 1, 2, 3, 4, 5, 6 };
+        int[] fourColorsIndex = GetRandomColors(arr);
         currentColorIndex = Random.Range(0, 4);
         currentColor = colors[fourColorsIndex[currentColorIndex]];
         colorText.text = currentColor.ToString();
 
-        for (int j = 0; j < clouds.Length; j++) 
+        for (int j = 0; j < clouds.Length; j++)
         {
             clouds[j].sprite = sprites[fourColorsIndex[j]];
-            if (fourColorsIndex[currentColorIndex] == fourColorsIndex[j]) {
+            if (fourColorsIndex[currentColorIndex] == fourColorsIndex[j])
+            {
                 selectedCloud = clouds[j];
             }
         }
     }
 
-    int [] GetRandomColors(int[] fourColorsIndex)
+    int[] GetRandomColors(int[] fourColorsIndex)
     {
         System.Random random = new System.Random();
         List<int> availableValues = fourColorsIndex.ToList();
@@ -113,6 +114,36 @@ public class Clouds : MonoBehaviour
             CheckSelection(rightCloud);
         }
 
+        if (Input.touchCount > 0)
+        {
+            Touch touch = Input.GetTouch(0);
+            if (touch.phase == TouchPhase.Began)
+            {
+                Vector3 touchPosition = Camera.main.ScreenToWorldPoint(touch.position);
+                RaycastHit2D hit = Physics2D.Raycast(touchPosition, Vector2.zero);
+                if (hit.collider != null)
+                {
+                    if (hit.collider.gameObject == topCloud.gameObject)
+                    {
+                        CheckSelection(topCloud);
+                    }
+                    else if (hit.collider.gameObject == bottomCloud.gameObject)
+                    {
+                        CheckSelection(bottomCloud);
+                    }
+                    else if (hit.collider.gameObject == leftCloud.gameObject)
+                    {
+                        CheckSelection(leftCloud);
+                    }
+                    else if (hit.collider.gameObject == rightCloud.gameObject)
+                    {
+                        CheckSelection(rightCloud);
+                    }
+
+                }
+            }
+        }
+
         if (timerIsRunning)
         {
             if (timeRemaining > 0)
@@ -135,12 +166,15 @@ public class Clouds : MonoBehaviour
         {
             score += 5;
             scoreText.text = "Score: " + score;
-            if (score == 50){
+            if (score == 50)
+            {
                 wellDoneAudio.Play();
                 Color newColor;
                 ColorUtility.TryParseHtmlString("#FF0000", out newColor);
                 scoreText.color = newColor;
-            } else {
+            }
+            else
+            {
                 correctAudio.Play();
             }
             CheckScore(score);
@@ -154,12 +188,13 @@ public class Clouds : MonoBehaviour
 
     private void CheckScore(int Score)
     {
-        if (Score >= 50) 
+        if (Score >= 50)
         {
             level2Text.text = "Well Done!!";
             SetRandomColorLevel2();
         }
-        else {
+        else
+        {
             SetRandomColor();
         }
     }
